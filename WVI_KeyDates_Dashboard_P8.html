@@ -101,6 +101,9 @@
   .task-row.holiday-row { background: #F5F7FF; }
   .task-row.holiday-row:hover { background: #EEF2FF; }
   .dot-holiday { background: #6366F1; }
+  .task-row.key-task { border-left: 3px solid var(--wvi-orange); background: #FFFAF6; }
+  .task-row.key-task:hover { background: var(--wvi-orange-light); }
+  .task-row.key-task .task-name { font-weight: 600; }
   .footer { margin-top: 2.5rem; text-align: center; font-size: 11px; color: var(--text-tertiary); }
 
   @media (max-width: 700px) {
@@ -446,7 +449,9 @@ function renderTimeline(){
         const label=isHoliday?'Holiday':od?'Overdue':t.status==='Not yet started'?'Pending':t.status;
         const dCls=isHoliday?'dot-holiday':od?'dot-overdue':t.status==='Completed'?'dot-done':t.status==='In progress'?'dot-prog':'dot-pend';
         const dueCls='task-due'+(od&&!isHoliday?' overdue-date':'');
-        const rowCls='task-row'+(isHoliday?' holiday-row':od?' overdue-row':'');
+        const keyTasks=['DPC CAL Run','Cost Allocation (CAL) Run','SCR Entries ONLY (after CAL)','Posting Reports to FFR Database','Finalization of Cover Memo'];
+        const isKey=keyTasks.includes(t.name);
+        const rowCls='task-row'+(isHoliday?' holiday-row':od?' overdue-row':isKey?' key-task':'');
         const commentHtml=t.comment?`<div class="task-comment">💬 ${t.comment}</div>`:'';
         return `<div class="${rowCls}">
           <span class="status-dot ${dCls}"></span>
