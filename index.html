@@ -210,15 +210,15 @@
 
 <script>
 const tasks = [
-  {status:'Not yet started',name:'Last day to send billing invoice for bank debit',owner:'All Finance',wd:-4,due:'May 26',dueDate:'2026-05-26',day:'Tuesday',cut:'3PM',comment:''},
+  {status:'Completed',name:'Last day to send billing invoice for bank debit',owner:'All Finance',wd:-4,due:'May 26',dueDate:'2026-05-26',day:'Tuesday',cut:'3PM',comment:''},
   {status:'holiday',name:'🇵🇭 Regular Holiday — Eid\'l Adha',owner:'—',wd:-3,due:'May 27',dueDate:'2026-05-27',day:'Wednesday',cut:'No work',comment:''},
-  {status:'Not yet started',name:'Pre-run of Aging Report',owner:'SSC',wd:-3,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'5PM',comment:''},
-  {status:'Not yet started',name:'Transaction Listing for Critical Grants / Priority Collection',owner:'All Finance',wd:-2,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'6PM',comment:''},
-  {status:'Not yet started',name:'SA related Payroll Entries',owner:'Payroll',wd:-2,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'6PM',comment:''},
-  {status:'Not yet started',name:'Charging Confirmation: Direct Charges (excl. EU/BMZ)',owner:'All Finance',wd:-2,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'6PM',comment:''},
-  {status:'Not yet started',name:'Charging Confirmation: Payroll (excl. EU/BMZ)',owner:'All Finance',wd:-2,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'6PM',comment:''},
-  {status:'Not yet started',name:'Charging Confirmation: Mobile Allowance',owner:'All Finance',wd:-2,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'6PM',comment:''},
-  {status:'Not yet started',name:'Charging Confirmation: Insurance (excl. EU/BMZ)',owner:'All Finance',wd:-2,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'6PM',comment:''},
+  {status:'Completed',name:'Pre-run of Aging Report',owner:'SSC',wd:-3,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'5PM',comment:''},
+  {status:'Completed',name:'Transaction Listing for Critical Grants / Priority Collection',owner:'All Finance',wd:-2,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'6PM',comment:''},
+  {status:'Completed',name:'SA related Payroll Entries',owner:'Payroll',wd:-2,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'6PM',comment:''},
+  {status:'Completed',name:'Charging Confirmation: Direct Charges (excl. EU/BMZ)',owner:'All Finance',wd:-2,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'6PM',comment:''},
+  {status:'Completed',name:'Charging Confirmation: Payroll (excl. EU/BMZ)',owner:'All Finance',wd:-2,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'6PM',comment:''},
+  {status:'Completed',name:'Charging Confirmation: Mobile Allowance',owner:'All Finance',wd:-2,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'6PM',comment:''},
+  {status:'Completed',name:'Charging Confirmation: Insurance (excl. EU/BMZ)',owner:'All Finance',wd:-2,due:'May 28',dueDate:'2026-05-28',day:'Thursday',cut:'6PM',comment:''},
   {status:'Not yet started',name:'Recording of Conversion Rate (FT) & GC Funding',owner:'GL',wd:-1,due:'May 29',dueDate:'2026-05-29',day:'Friday',cut:'11AM',comment:''},
   {status:'Not yet started',name:'Review accuracy and completeness of Codings & Revaluation',owner:'GL',wd:-1,due:'May 29',dueDate:'2026-05-29',day:'Friday',cut:'12NN',comment:''},
   {status:'Not yet started',name:'Exchange Rate Calculation',owner:'SSC',wd:-1,due:'May 29',dueDate:'2026-05-29',day:'Friday',cut:'1PM',comment:''},
@@ -301,7 +301,7 @@ function toggleVideo(){
 }
 
 function isOverdue(t){
-  if(t.status==='Completed') return false;
+  if(t.status==='Completed'||t.status==='holiday') return false;
   if(!t.dueDate) return false;
   const d=new Date(t.dueDate); d.setHours(0,0,0,0);
   return d < today;
@@ -309,7 +309,7 @@ function isOverdue(t){
 
 // Countdown banner
 const overdueTasks=tasks.filter(isOverdue);
-const nextPending=tasks.find(t=>t.status!=='Completed'&&t.dueDate&&new Date(t.dueDate)>=today);
+const nextPending=tasks.find(t=>t.status!=='Completed'&&t.status!=='holiday'&&t.dueDate&&new Date(t.dueDate)>=today);
 const banner=document.getElementById('countdown-banner');
 if(overdueTasks.length){
   const np=nextPending;
