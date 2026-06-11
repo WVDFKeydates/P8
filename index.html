@@ -40,7 +40,9 @@
   .countdown-sub { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
 
   .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.25rem; }
-  .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.1rem 1.25rem; }
+  .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.1rem 1.25rem; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; }
+  .metric-card:hover { border-color: var(--border-strong); box-shadow: 0 2px 8px rgba(0,0,0,0.06); transform: translateY(-1px); }
+  .metric-card.metric-active { border-color: var(--wvi-orange); box-shadow: 0 0 0 1px var(--wvi-orange); }
   .metric-label { font-size: 11px; font-weight: 500; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
   .metric-value { font-size: 28px; font-weight: 600; line-height: 1; margin-bottom: 8px; }
   .metric-sub { font-size: 11px; color: var(--text-tertiary); }
@@ -268,9 +270,9 @@ const tasks = [
   {status:'Completed',name:'Last day of Account Allocation',owner:'SSC',wd:6,due:'Jun 8',dueDate:'2026-06-08',day:'Monday',cut:'6PM',comment:''},
   {status:'Completed',name:'Reclass of Cash Voucher Transfer Income',owner:'All Finance',wd:6,due:'Jun 8',dueDate:'2026-06-08',day:'Monday',cut:'6PM',comment:''},
   {status:'Completed',name:'SCR Entries ONLY (after CAL)',owner:'All Finance',wd:7,due:'Jun 9',dueDate:'2026-06-09',day:'Tuesday',cut:'6PM',comment:''},
-  {status:'In progress',name:'Generate Financial Reports & Send to NO',owner:'SSC',wd:8,due:'Jun 10',dueDate:'2026-06-10',day:'Wednesday',cut:'1PM',comment:''},
-  {status:'In progress',name:'Review Financial Reports by NO',owner:'GL',wd:8,due:'Jun 10',dueDate:'2026-06-10',day:'Wednesday',cut:'4PM',comment:''},
-  {status:'In progress',name:'Posting Reports to FFR Database',owner:'SSC',wd:8,due:'Jun 10',dueDate:'2026-06-10',day:'Wednesday',cut:'5PM',comment:''},
+  {status:'Completed',name:'Generate Financial Reports & Send to NO',owner:'SSC',wd:8,due:'Jun 10',dueDate:'2026-06-10',day:'Wednesday',cut:'1PM',comment:''},
+  {status:'Completed',name:'Review Financial Reports by NO',owner:'GL',wd:8,due:'Jun 10',dueDate:'2026-06-10',day:'Wednesday',cut:'4PM',comment:''},
+  {status:'Completed',name:'Posting Reports to FFR Database',owner:'SSC',wd:8,due:'Jun 10',dueDate:'2026-06-10',day:'Wednesday',cut:'5PM',comment:''},
   {status:'In progress',name:'Power BI Financial Report',owner:'SFO/FMs',wd:9,due:'Jun 11',dueDate:'2026-06-11',day:'Thursday',cut:'4PM',comment:''},
   {status:'In progress',name:'PNSG Health Tracker',owner:'SFO/FMs',wd:9,due:'Jun 11',dueDate:'2026-06-11',day:'Thursday',cut:'5PM',comment:''},
   {status:'In progress',name:'Request CCLR re-run',owner:'SFO/FMs',wd:9,due:'Jun 11',dueDate:'2026-06-11',day:'Thursday',cut:'5PM',comment:''},
@@ -335,10 +337,10 @@ const total=tasks.filter(t=>t.status!=='holiday').length,done=tasks.filter(t=>t.
 const inProg=tasks.filter(t=>t.status==='In progress').length,pending=tasks.filter(t=>t.status==='Not yet started').length;
 const pct=Math.round(done/total*100);
 document.getElementById('metrics').innerHTML=`
-  <div class="metric-card"><div class="metric-label">Total tasks</div><div class="metric-value">${total}</div><div class="metric-sub">Period 8 activities</div><div class="prog-bar"><div class="prog-fill" style="width:100%;background:#D3D1C7"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Completed</div><div class="metric-value" style="color:var(--green)">${done}</div><div class="metric-sub">${pct}% of total</div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:var(--green)"></div></div></div>
-  <div class="metric-card"><div class="metric-label">In progress</div><div class="metric-value" style="color:var(--wvi-orange)">${inProg}</div><div class="metric-sub">Currently active</div><div class="prog-bar"><div class="prog-fill" style="width:${Math.round(inProg/total*100)}%;background:var(--wvi-orange)"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Pending</div><div class="metric-value">${pending}</div><div class="metric-sub">Not yet started</div><div class="prog-bar"><div class="prog-fill" style="width:${Math.round(pending/total*100)}%;background:#B4B2A9"></div></div></div>
+  <div class="metric-card" data-status="All" onclick="filterByStatus('All')" title="Show all activities"><div class="metric-label">Total tasks</div><div class="metric-value">${total}</div><div class="metric-sub">Period 8 activities</div><div class="prog-bar"><div class="prog-fill" style="width:100%;background:#D3D1C7"></div></div></div>
+  <div class="metric-card" data-status="Completed" onclick="filterByStatus('Completed')" title="Show completed activities"><div class="metric-label">Completed</div><div class="metric-value" style="color:var(--green)">${done}</div><div class="metric-sub">${pct}% of total</div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:var(--green)"></div></div></div>
+  <div class="metric-card" data-status="In progress" onclick="filterByStatus('In progress')" title="Show in-progress activities"><div class="metric-label">In progress</div><div class="metric-value" style="color:var(--wvi-orange)">${inProg}</div><div class="metric-sub">Currently active</div><div class="prog-bar"><div class="prog-fill" style="width:${Math.round(inProg/total*100)}%;background:var(--wvi-orange)"></div></div></div>
+  <div class="metric-card" data-status="Not yet started" onclick="filterByStatus('Not yet started')" title="Show pending activities"><div class="metric-label">Pending</div><div class="metric-value">${pending}</div><div class="metric-sub">Not yet started</div><div class="prog-bar"><div class="prog-fill" style="width:${Math.round(pending/total*100)}%;background:#B4B2A9"></div></div></div>
 `;
 
 // Owner chart
@@ -382,7 +384,7 @@ ownerEl.innerHTML=owners.map(o=>`<button class="filter-btn${o==='All'?' active':
   o!=='All'?`<span style="width:7px;height:7px;border-radius:50%;background:${ownerColorMap[o]};display:inline-block;flex-shrink:0"></span>`:''}${o}</button>`).join('');
 
 statusEl.querySelectorAll('.filter-btn').forEach(btn=>{
-  btn.onclick=()=>{activeStatus=btn.dataset.s;statusEl.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.s===activeStatus));renderTimeline();};
+  btn.onclick=()=>{activeStatus=btn.dataset.s;statusEl.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.s===activeStatus));document.querySelectorAll('.metric-card').forEach(c=>c.classList.toggle('metric-active',activeStatus!=='All'&&c.dataset.status===activeStatus));renderTimeline();};
 });
 ownerEl.querySelectorAll('.filter-btn').forEach(btn=>{
   btn.onclick=()=>{
@@ -398,6 +400,21 @@ ownerEl.querySelectorAll('.filter-btn').forEach(btn=>{
 });
 
 const collapseState={};
+function filterByStatus(s){
+  // Toggle: clicking the active card resets to All
+  activeStatus = (activeStatus===s) ? 'All' : s;
+  statusEl.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.s===activeStatus));
+  // Expand every day group so filtered tasks are visible
+  tasks.forEach(t=>{
+    const key=t.wd<0?`Pre-close (WD ${t.wd} · ${t.day})`:t.wd===0?'Periodic Tasks':`Working Day ${t.wd} · ${t.day}`;
+    collapseState[key]=false;
+  });
+  // Highlight the active metric card
+  document.querySelectorAll('.metric-card').forEach(c=>c.classList.toggle('metric-active',activeStatus!=='All'&&c.dataset.status===activeStatus));
+  renderTimeline();
+  document.querySelector('.timeline-card').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
 
 function filterByOwner(owner){
   activeOwner = activeOwner === owner ? 'All' : owner;
